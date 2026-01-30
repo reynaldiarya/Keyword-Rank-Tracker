@@ -21,4 +21,6 @@ if (!env.success) {
 
 export const config = {
   port: env.data.PORT,
+  scrapingRobotApiKey: env.data.SCRAPING_ROBOT_API_KEY || '',
+  serperDevApiKey: env.data.SERPER_DEV_API_KEY || '',
 };

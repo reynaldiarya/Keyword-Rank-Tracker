@@ -1,12 +1,9 @@
-import dotenv from 'dotenv';
-
 import { logger } from '../utils/logger';
-import type { SearchScraper } from '../types/ScraperInterface';
+import type { SearchScraper } from '../types';
 import { ScrapingRobotScraper } from './scrapers/ScrapingRobotScraper';
 import { PuppeteerScraper } from './scrapers/PuppeteerScraper';
 import { SerperDevScraper } from './scrapers/SerperDevScraper';
-
-dotenv.config();
+import { config } from '../config/config';
 
 export interface RankingResult {
   keyword: string;
@@ -33,11 +30,9 @@ export class KeywordRankingService {
     if (scraperType === 'puppeteer') {
       scraper = new PuppeteerScraper();
     } else if (scraperType === 'serperDev') {
-      const apiKey = process.env.SERPER_DEV_API_KEY || '';
-      scraper = new SerperDevScraper(apiKey);
+      scraper = new SerperDevScraper(config.serperDevApiKey);
     } else {
-      const apiKey = process.env.SCRAPING_ROBOT_API_KEY || '';
-      scraper = new ScrapingRobotScraper(apiKey);
+      scraper = new ScrapingRobotScraper(config.scrapingRobotApiKey);
     }
 
     // Initialize Scraper (Penting untuk Puppeteer agar buka browser 1x saja)

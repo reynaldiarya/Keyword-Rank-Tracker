@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
-import type { SearchScraper, SerpEntry } from '../../types/ScraperInterface';
+import type { SearchScraper, SerpEntry } from '../../types';
 
 /**
  * Scraper menggunakan API pihak ketiga (Scraping Robot).

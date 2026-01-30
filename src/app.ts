@@ -1,7 +1,7 @@
 import express from 'express';
 
-import keywordRankingRoutes from './routes/keywordRankingRoutes';
-import { errorHandler } from './middleware/errorHandler';
+import keywordRankingRoutes from './routes/keywordRanking.routes';
+import { errorHandler } from './middleware/errorHandler.middleware';
 
 const app = express();
 

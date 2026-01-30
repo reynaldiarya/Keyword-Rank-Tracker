@@ -1,18 +1,7 @@
 import type { Request, Response } from 'express';
-import { z } from 'zod';
 
-import { keywordRankingService } from '../services/keywordRankingService';
+import { keywordRankingService } from '../services/keywordRanking.service';
 import { logger } from '../utils/logger';
-
-// Schema validasi input menggunakan Zod
-export const keywordRankingSchema = z.object({
-  body: z.object({
-    website: z.string().min(1, 'Website is required'), // Website wajib diisi
-    keywords: z.array(z.string()).min(1, 'At least one keyword is required'), // Minimal 1 keyword
-    page: z.coerce.number().int().min(1).default(1), // Halaman pencarian Google, default 1
-    scraper: z.enum(['scrapingRobot', 'puppeteer', 'serperDev']).default('scrapingRobot'), // Pilihan scraper
-  }),
-});
 
 export class KeywordRankingController {
   /**

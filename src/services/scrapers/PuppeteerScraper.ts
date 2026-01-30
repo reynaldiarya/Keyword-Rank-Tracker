@@ -3,7 +3,7 @@ import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import * as cheerio from 'cheerio';
 
-import type { SearchScraper, SerpEntry } from '../../types/ScraperInterface';
+import type { SearchScraper, SerpEntry } from '../../types';
 
 // Menggunakan plugin Stealth untuk menyembunyikan fakta bahwa ini adalah bot Puppeteer
 puppeteer.use(StealthPlugin());

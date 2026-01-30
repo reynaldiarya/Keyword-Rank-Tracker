@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-import type { SearchScraper, SerpEntry } from '../../types/ScraperInterface';
-import type { SerperResponse } from '../../types/SerperTypes';
+import type { SearchScraper, SerpEntry, SerperResponse } from '../../types';
 import { logger } from '../../utils/logger';
 
 // Scraper menggunakan Serper.dev API (Wrapper Google Search)
