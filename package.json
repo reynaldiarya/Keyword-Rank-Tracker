@@ -19,7 +19,7 @@
     "google"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@types/cheerio": "^0.22.35",
     "axios": "^1.13.4",
