@@ -4,6 +4,7 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import * as cheerio from 'cheerio';
 
 import type { SearchScraper, SerpEntry } from '../../types';
+import { logger } from '../../utils';
 
 // Menggunakan plugin Stealth untuk menyembunyikan fakta bahwa ini adalah bot Puppeteer
 puppeteer.use(StealthPlugin());
@@ -27,7 +28,7 @@ export class PuppeteerScraper implements SearchScraper {
 
     // Jika tidak ada endpoint remote, pakai browser lokal saja
     if (!browserWsEndpoint) {
-      console.log('No remote browser WS provided, launching local Puppeteer...');
+      logger.info('No remote browser WS provided, launching local Puppeteer...');
       this.browser = await puppeteer.launch({ headless: true });
     } else {
       // Jika ada endpoint (misal browserless.io), connect ke sana
@@ -94,7 +95,7 @@ export class PuppeteerScraper implements SearchScraper {
       // Set ukuran layar PC standar
       await page.setViewport({ width: 1920, height: 1080 });
 
-      console.log(`🔍 Mencari via Puppeteer: "${keyword}"`);
+      logger.info(`🔍 Mencari via Puppeteer: "${keyword}"`);
 
       // Buka halaman Google Search
       await page.goto(
@@ -115,7 +116,7 @@ export class PuppeteerScraper implements SearchScraper {
         content.includes('lalu lintas yang tidak wajar') || content.includes('unusual traffic');
 
       if (isCaptcha || isUnusual) {
-        console.error('🚨 KENA BLOKIR / CAPTCHA! Ganti IP atau tunggu.');
+        logger.error('🚨 KENA BLOKIR / CAPTCHA! Ganti IP atau tunggu.');
         throw new Error('Puppeteer Blocked/Captcha detected');
       }
 
@@ -123,7 +124,7 @@ export class PuppeteerScraper implements SearchScraper {
       try {
         await page.waitForSelector('div.yuRUbf', { timeout: 10000 });
       } catch (e) {
-        console.log('⚠️  Selector tidak ditemukan atau kena Captcha/Timeout.', e);
+        logger.warn('⚠️  Selector tidak ditemukan atau kena Captcha/Timeout.', e);
       }
 
       // Ambil HTML halaman
@@ -150,7 +151,7 @@ export class PuppeteerScraper implements SearchScraper {
 
       return results;
     } catch (error) {
-      console.error('Puppeteer Error:', error);
+      logger.error('Puppeteer Error:', error);
       throw error;
     } finally {
       // Tutup tab (page) saja, JANGAN tutup browser agar bisa dipakai lagi
@@ -169,7 +170,7 @@ export class PuppeteerScraper implements SearchScraper {
       });
       await new Promise((r) => setTimeout(r, Math.floor(Math.random() * 2000) + 1000));
     } catch (e) {
-      console.error('Puppeteer Error:', e);
+      logger.error('Puppeteer Error:', e);
     }
   }
 }

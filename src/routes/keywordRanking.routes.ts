@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import { keywordRankingController } from '../controllers/keywordRanking.controller';
-import { keywordRankingSchema } from '../schemas/keywordRanking.schema';
-import { validateRequest } from '../middleware/validateRequest.middleware';
+import { keywordRankingController } from '../controllers';
+import { keywordRankingSchema } from '../schemas';
+import { validateRequest } from '../middleware';
 
 const router = Router();
 

@@ -1,4 +1,4 @@
-import { logger } from '../utils/logger';
+import { logger } from '../utils';
 import type { SearchScraper } from '../types';
 import { ScrapingRobotScraper } from './scrapers/ScrapingRobotScraper';
 import { PuppeteerScraper } from './scrapers/PuppeteerScraper';

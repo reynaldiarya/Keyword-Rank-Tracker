@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 
-import { keywordRankingService } from '../services/keywordRanking.service';
-import { logger } from '../utils/logger';
+import { keywordRankingService } from '../services';
+import { logger } from '../utils';
 
 export class KeywordRankingController {
   /**

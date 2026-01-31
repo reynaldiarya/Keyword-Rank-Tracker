@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 
 import type { SearchScraper, SerpEntry } from '../../types';
+import { logger } from '../../utils';
 
 /**
  * Scraper menggunakan API pihak ketiga (Scraping Robot).
@@ -21,6 +22,7 @@ export class ScrapingRobotScraper implements SearchScraper {
     country: string = 'ID'
   ): Promise<SerpEntry[]> {
     if (!this.apiKey) {
+      logger.error('SCRAPING_ROBOT_API_KEY is not configured');
       throw new Error('SCRAPING_ROBOT_API_KEY is not configured');
     }
 
@@ -34,6 +36,7 @@ export class ScrapingRobotScraper implements SearchScraper {
     const apiUrl = `https://api.scrapingrobot.com/?token=${this.apiKey}&proxyCountry=${country}&render=false&url=${googleUrl}`;
 
     try {
+      logger.info(`🔍 Mencari via Scraping Robot: "${keyword}"`);
       const response = await axios.get(apiUrl);
       const html = response.data.result;
       const $ = cheerio.load(html);
@@ -58,7 +61,7 @@ export class ScrapingRobotScraper implements SearchScraper {
 
       return results;
     } catch (error) {
-      console.error('Scraping Robot Error:', error);
+      logger.error('Scraping Robot Error:', error);
       throw error;
     }
   }
