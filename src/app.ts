@@ -1,11 +1,11 @@
-import express from 'express';
+import express, { json } from 'express';
 
 import keywordRankingRoutes from './routes/keywordRanking.routes';
 import { errorHandler } from './middleware';
 
 const app = express();
 
-app.use(express.json());
+app.use(json());
 app.use('/keyword-ranking', keywordRankingRoutes);
 
 app.use(errorHandler);

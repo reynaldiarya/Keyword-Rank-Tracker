@@ -1,7 +1,7 @@
-import dotenv from 'dotenv';
+import { config as loadEnv } from 'dotenv';
 import { z } from 'zod';
 
-dotenv.config();
+loadEnv();
 
 const envSchema = z.object({
   PORT: z
