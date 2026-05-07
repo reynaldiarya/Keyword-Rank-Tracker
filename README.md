@@ -1,485 +1,199 @@
-<div align="center">
+# Keyword Rank Tracker
 
-# 🎯 Keyword Rank Tracker
+A high-performance SEO utility designed to automate search engine ranking monitoring across multiple scraping providers.
 
-**A powerful, enterprise-grade TypeScript application for tracking keyword search engine rankings on Google**
+<p align="center">
+  <img src="https://img.shields.io/npm/v/keyword-rank-tracker.svg?color=blue" />
+  <a href="https://www.npmjs.com/package/keyword-rank-tracker">
+    <img alt="downloads" src="https://img.shields.io/npm/dm/keyword-rank-tracker.svg?color=blue" target="_blank" />
+  </a>
+  <a href="LICENSE">
+    <img alt="License" src="https://img.shields.io/badge/license-MIT-yellow.svg" target="_blank" />
+  </a>
+  <a href="https://codecov.io/gh/reynaldiarya/Keyword-Rank-Tracker">
+    <img src="https://codecov.io/gh/reynaldiarya/Keyword-Rank-Tracker/branch/main/graph/badge.svg" />
+  </a>
+</p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
-[![Express.js](https://img.shields.io/badge/Express.js-5.2-lightgrey.svg)](https://expressjs.com/)
+## Description
 
-[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [API Documentation](#-api-documentation) • [Contributing](#-contributing)
+Keyword Rank Tracker is a robust Node.js application built for developers and SEO professionals who require precise, automated tracking of website positions in Google Search Results. It eliminates the complexity of manual SERP monitoring by providing a unified API interface that supports multiple data extraction methods, including direct headless browser automation and specialized third-party scraping services. The platform is engineered for scalability and reliability, ensuring consistent data delivery while bypassing anti-bot measures.
 
-</div>
+## Features
 
----
+- **Multi-Provider Scraper Architecture** - Switch seamlessly between Puppeteer, Scraping Robot, and Serper.dev to balance cost and performance.
+- **Stealth Automation** - Integrated Puppeteer stealth plugins and user-agent rotation to maintain high success rates and avoid detection.
+- **Deep SERP Analysis** - Support for multi-page search result scanning to find rankings even beyond the first page.
+- **Strict Data Validation** - Enterprise-grade request validation using Zod to ensure data integrity and clear error reporting.
+- **Production-Ready Logging** - Comprehensive event tracking and error monitoring powered by Winston for streamlined maintenance.
+- **Developer-Centric Design** - Written entirely in TypeScript with a clean, modular architecture for easy extension and integration.
 
-## 📋 Table of Contents
+## Tech Stack
 
-- [Overview](#-overview)
-- [Features](#-features)
-- [Prerequisites](#-prerequisites)
-- [Installation](#-installation)
-- [Configuration](#-configuration)
-- [Usage](#-usage)
-- [API Documentation](#-api-documentation)
-- [Architecture](#-architecture)
-- [Tech Stack](#-tech-stack)
-- [Development](#-development)
-- [Troubleshooting](#-troubleshooting)
-- [Contributing](#-contributing)
-- [License](#-license)
+- **Backend Framework**: Node.js (Express 5.x)
+- **Language**: TypeScript 6.x
+- **Browser Automation**: Puppeteer, Puppeteer Extra (Stealth)
+- **Data Extraction**: Cheerio
+- **Validation**: Zod
+- **Networking**: Axios
+- **Logging**: Winston
+- **Environment Management**: Dotenv
 
----
+## Installation Guide
 
-## 🌟 Overview
+### Prerequisites
 
-**Keyword Rank Tracker** is a robust TypeScript-based Node.js application designed to track keyword search engine rankings on Google (Indonesia region). Built with scalability and performance in mind, it supports multiple scraping strategies to ensure reliable and efficient rank tracking.
+- Node.js 18.x or higher
+- npm 9.x or higher
+- A browserless instance (optional, for remote Puppeteer execution)
 
-### Why Use This Tool?
+### Steps
 
-- 🚀 **Multiple Scraping Methods**: Choose between Puppeteer, Scraping Robot API, or Serper.dev based on your needs
-- 💪 **Production-Ready**: Built with TypeScript for type safety and maintainability
-- ⚡ **Performance Optimized**: Single browser instance reuse, efficient pagination handling
-- 🔒 **Secure**: Environment-based configuration with API key protection
-- 📊 **Comprehensive Logging**: Winston-powered logging for debugging and monitoring
-
----
-
-## ✨ Features
-
-### Core Capabilities
-
-- **🎯 Keyword Rank Tracking**: Accurately tracks keyword positions on Google Search (Indonesia region)
-- **📦 Batch Processing**: Efficiently handles multiple keywords in a single request
-- **📄 Pagination Support**: Checks rankings across multiple search result pages
-- **🔄 Multiple Scraper Strategies**:
-  - **Puppeteer**: Headless browser scraping with local or remote Chrome instances
-  - **Scraping Robot**: API-based scraping with proxy rotation for enhanced reliability
-  - **Serper.dev**: Fast and reliable Google Search API integration
-- **⚙️ Flexible Configuration**: Extensive customization through environment variables
-- **📝 Request Validation**: Zod-powered schema validation for API requests
-- **🪵 Advanced Logging**: Winston logger with multiple log levels and formats
-
----
-
-## 📋 Prerequisites
-
-Before you begin, ensure you have the following installed:
-
-| Requirement                | Version  | Required      |
-| -------------------------- | -------- | ------------- |
-| **Node.js**                | ≥ 18.0.0 | ✅ Yes        |
-| **npm** or **yarn**        | Latest   | ✅ Yes        |
-| **Scraping Robot API Key** | -        | ⚠️ Optional\* |
-| **Serper.dev API Key**     | -        | ⚠️ Optional\* |
-
-> **\*Note**: API keys are only required if you choose to use the respective scraper. The Puppeteer scraper works without any API keys.
-
----
-
-## 🚀 Installation
-
-### 1️⃣ Clone the Repository
+1. Clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/reynaldiarya/Keyword-Rank-Tracker.git
 cd Keyword-Rank-Tracker
 ```
 
-### 2️⃣ Install Dependencies
-
-Using npm:
+2. Install the project dependencies:
 
 ```bash
 npm install
 ```
 
-Or using yarn:
-
-```bash
-yarn install
-```
-
-### 3️⃣ Verify Installation
-
-```bash
-npm run lint
-```
-
----
-
-## ⚙️ Configuration
-
-### Environment Variables
-
-1. **Create your `.env` file:**
+3. Configure the environment variables:
 
 ```bash
 cp .env.example .env
 ```
 
-2. **Configure the following variables:**
+4. Open the `.env` file and update the necessary configurations (see Configuration section).
 
-```env
-# Server Configuration
-PORT=3003
-NODE_ENV=development
+5. Build the production bundle:
 
-# Scraping Robot API (Optional)
-# Required only if using 'scrapingRobot' scraper
-SCRAPING_ROBOT_API_KEY=your_scraping_robot_api_key_here
-
-# Serper.dev API (Optional)
-# Required only if using 'serperDev' scraper
-SERPER_DEV_API_KEY=your_serper_dev_api_key_here
-
-# Puppeteer Configuration (Optional)
-# Leave empty to use local headless Chrome
-# Or set a WebSocket endpoint (e.g., browserless.io) for remote browser
-BROWSER_WS_ENDPOINT=
-
-# Puppeteer Customization (Optional)
-PUPPETEER_USER_AGENT=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
-PUPPETEER_COOKIE=
+```bash
+npm run build
 ```
 
-### Configuration Options
+6. Start the application:
 
-| Variable                 | Description             | Default       | Required |
-| ------------------------ | ----------------------- | ------------- | -------- |
-| `PORT`                   | Server port number      | `3003`        | Yes      |
-| `NODE_ENV`               | Environment mode        | `development` | Yes      |
-| `SCRAPING_ROBOT_API_KEY` | Scraping Robot API key  | -             | No       |
-| `SERPER_DEV_API_KEY`     | Serper.dev API key      | -             | No       |
-| `BROWSER_WS_ENDPOINT`    | Remote browser endpoint | -             | No       |
-| `PUPPETEER_USER_AGENT`   | Custom user agent       | -             | No       |
-| `PUPPETEER_COOKIE`       | Custom cookies          | -             | No       |
+```bash
+npm start
+```
 
----
-
-## 🎯 Usage
-
-### Development Mode
-
-Run the application with hot-reloading for development:
+For development with hot-reload:
 
 ```bash
 npm run dev
 ```
 
-The server will start at `http://localhost:3003` (or your configured port).
+## Configuration
 
-### Production Mode
+The application uses environment variables for sensitive data and system settings.
 
-Build and run the application for production:
+### Environment Variables
 
-```bash
-# Build the TypeScript project
-npm run build
+| Variable | Description | Default / Example |
+|----------|-------------|-------------------|
+| `PORT` | The port the API server will listen on | `3003` |
+| `NODE_ENV` | Application environment mode | `production` |
+| `SCRAPING_ROBOT_API_KEY` | API Key for Scraping Robot provider | `your_api_key` |
+| `SERPER_DEV_API_KEY` | API Key for Serper.dev provider | `your_api_key` |
+| `BROWSER_WS_ENDPOINT` | WebSocket endpoint for remote Puppeteer | `ws://localhost:3000` |
+| `PUPPETEER_USER_AGENT` | Custom User-Agent string for Puppeteer | `Mozilla/5.0...` |
+| `PUPPETEER_COOKIE` | Custom cookies for search requests | `your_cookie` |
 
-# Start the production server
-npm start
-```
+## Usage
 
-### Code Quality
+### Track Keyword Rankings
 
-```bash
-# Run ESLint
-npm run lint
+The primary endpoint allows you to query the current ranking of a website for specific keywords.
 
-# Fix linting issues automatically
-npm run lint:fix
+**Endpoint:** `GET /keyword-ranking`
 
-# Format code with Prettier
-npm run format
-```
+#### Request Body (JSON)
 
----
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `website` | `string` | Yes | The domain or URL to track (e.g., `google.com`) |
+| `keywords` | `array` | Yes | List of keywords to check rankings for |
+| `page` | `number` | No | Number of Google pages to scan (default: `1`) |
+| `scraper` | `enum` | No | Scraper type: `puppeteer`, `scrapingRobot`, or `serperDev` |
 
-## 📖 API Documentation
-
-### Check Keyword Rankings
-
-Track keyword rankings for a specific website.
-
-#### Request
-
-```http
-GET /keyword-ranking
-Content-Type: application/json
-```
-
-#### Request Body
+#### Sample Request
 
 ```json
 {
   "website": "example.com",
-  "keywords": ["keyword1", "keyword2", "keyword3"],
+  "keywords": ["modern web design", "seo tools"],
   "page": 1,
-  "scraper": "serperDev"
+  "scraper": "puppeteer"
 }
 ```
 
-#### Parameters
-
-| Parameter  | Type     | Description                                                      | Required | Default           |
-| ---------- | -------- | ---------------------------------------------------------------- | -------- | ----------------- |
-| `website`  | string   | Target website domain                                            | Yes      | -                 |
-| `keywords` | string[] | Array of keywords to track                                       | Yes      | -                 |
-| `page`     | number   | Google search page number                                        | No       | `1`               |
-| `scraper`  | string   | Scraper type: `"puppeteer"`, `"scrapingRobot"`, or `"serperDev"` | No       | `"scrapingRobot"` |
-
-#### Response
+#### Sample Response
 
 ```json
 {
-  "success": true,
-  "data": {
-    "website": "example.com",
-    "results": [
-      {
-        "keyword": "keyword1",
-        "rank": 3,
-        "url": "https://example.com/page1",
-        "found": true
-      },
-      {
-        "keyword": "keyword2",
-        "rank": null,
-        "url": null,
-        "found": false
-      }
-    ]
-  }
+  "website": "example.com",
+  "page": 1,
+  "totalFound": 2,
+  "rankings": [
+    {
+      "keyword": "modern web design",
+      "rank": 3,
+      "url": "https://example.com/blog/modern-design"
+    },
+    {
+      "keyword": "seo tools",
+      "rank": 12,
+      "url": "https://example.com/tools"
+    }
+  ]
 }
 ```
 
-#### Example Usage
+## Project Structure
 
-**cURL:**
-
-```bash
-curl -X GET http://localhost:3003/keyword-ranking \
-  -H "Content-Type: application/json" \
-  -d '{
-    "website": "example.com",
-    "keywords": ["seo tools", "rank tracker"],
-    "page": 1,
-    "scraper": "serperDev"
-  }'
+```text
+src/
+├── config/           # Application configuration and environment mapping
+├── controllers/      # Request handlers and response logic
+├── middleware/       # Custom Express middlewares (validation, errors)
+├── routes/           # API route definitions
+├── schemas/          # Zod validation schemas
+├── services/         # Core business logic and scraper implementations
+│   └── scrapers/     # Provider-specific scraping logic
+├── types/            # TypeScript interface and type definitions
+└── utils/            # Shared utilities and logger configuration
 ```
 
-**JavaScript (Fetch):**
+## Scripts / Commands
 
-```javascript
-const response = await fetch('http://localhost:3003/keyword-ranking', {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    website: 'example.com',
-    keywords: ['seo tools', 'rank tracker'],
-    page: 1,
-    scraper: 'serperDev',
-  }),
-});
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server with hot-reload using tsx |
+| `npm run build` | Compile TypeScript source code to JavaScript in `dist/` |
+| `npm start` | Run the compiled production application |
+| `npm run format` | Format source code using Prettier |
+| `npm run lint` | Analyze code for potential errors and styling issues |
+| `npm run lint:fix` | Automatically fix linting errors |
 
-const data = await response.json();
-console.log(data);
-```
+## Contributing
 
-> ⚠️ **Important**: This endpoint uses a `GET` request with a JSON body. Ensure your HTTP client (Postman, Insomnia, etc.) supports this configuration.
+Contributions are essential for the evolution of this project. To contribute:
 
----
+1. Fork the repository
+2. Create a specific feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes with descriptive messages (`git commit -m 'Add amazing feature'`)
+4. Push the branch to your fork (`git push origin feature/amazing-feature`)
+5. Open a Pull Request for review
 
-## 🏗️ Architecture
+## License
 
-### Project Structure
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for detailed terms and conditions.
 
-```
-Keyword-Rank-Tracker/
-├── src/
-│   ├── controllers/          # Request handlers
-│   ├── services/             # Business logic
-│   ├── scrapers/             # Scraper implementations
-│   ├── types/                # TypeScript type definitions
-│   ├── utils/                # Utility functions
-│   └── index.ts              # Application entry point
-├── dist/                     # Compiled JavaScript (generated)
-├── .env                      # Environment variables (gitignored)
-├── .env.example              # Environment template
-├── tsconfig.json             # TypeScript configuration
-├── package.json              # Project dependencies
-└── README.md                 # This file
-```
+## Author
 
-### Design Patterns
-
-- **Strategy Pattern**: Used for scraper selection (Puppeteer, Scraping Robot, Serper.dev)
-- **Dependency Injection**: Services are injected into controllers for better testability
-- **Single Responsibility**: Each module handles one specific concern
-- **Type Safety**: Full TypeScript implementation with strict typing
-
----
-
-## 🛠️ Tech Stack
-
-### Core Technologies
-
-| Technology     | Version | Purpose               |
-| -------------- | ------- | --------------------- |
-| **Node.js**    | ≥18.0.0 | Runtime environment   |
-| **TypeScript** | 5.9.3   | Type-safe development |
-| **Express.js** | 5.2.1   | Web framework         |
-
-### Scraping & Data Processing
-
-| Technology          | Version | Purpose                     |
-| ------------------- | ------- | --------------------------- |
-| **Puppeteer**       | 24.36.1 | Headless browser automation |
-| **Puppeteer Extra** | 3.3.6   | Puppeteer plugins           |
-| **Stealth Plugin**  | 2.11.2  | Anti-bot detection          |
-| **Cheerio**         | 1.2.0   | HTML parsing                |
-| **Axios**           | 1.13.4  | HTTP client                 |
-
-### Utilities
-
-| Technology  | Version | Purpose                |
-| ----------- | ------- | ---------------------- |
-| **Winston** | 3.19.0  | Logging                |
-| **Zod**     | 4.3.6   | Schema validation      |
-| **dotenv**  | 17.2.3  | Environment management |
-
-### Development Tools
-
-| Technology   | Version | Purpose              |
-| ------------ | ------- | -------------------- |
-| **ESLint**   | 9.39.2  | Code linting         |
-| **Prettier** | 3.8.1   | Code formatting      |
-| **tsx**      | 4.21.0  | TypeScript execution |
-
----
-
-## 👨‍💻 Development
-
-### Getting Started
-
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Make your changes**
-4. **Run tests and linting**: `npm run lint`
-5. **Commit your changes**: `git commit -m 'Add amazing feature'`
-6. **Push to the branch**: `git push origin feature/amazing-feature`
-7. **Open a Pull Request**
-
-### Code Style
-
-This project uses:
-
-- **ESLint** for code linting
-- **Prettier** for code formatting
-- **TypeScript strict mode** for type safety
-
-### Best Practices
-
-- ✅ Write type-safe code with TypeScript
-- ✅ Follow the existing code structure
-- ✅ Add comments for complex logic
-- ✅ Keep functions small and focused
-- ✅ Use meaningful variable names
-- ✅ Validate all inputs with Zod schemas
-
----
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-#### Issue: "Browser not found" error with Puppeteer
-
-**Solution**: Install Chromium manually:
-
-```bash
-npx puppeteer browsers install chrome
-```
-
-#### Issue: API returning 401 Unauthorized
-
-**Solution**: Verify your API keys in `.env`:
-
-```bash
-# Check if API keys are set correctly
-cat .env | grep API_KEY
-```
-
-#### Issue: Connection timeout
-
-**Solution**:
-
-- Check your internet connection
-- If using remote browser (`BROWSER_WS_ENDPOINT`), verify the endpoint is accessible
-- Increase timeout values in scraper configuration
-
-#### Issue: Rankings not matching manual search
-
-**Solution**:
-
-- Google results are personalized; rankings may vary
-- Consider clearing cookies or using incognito mode
-- Verify you're targeting the correct Google region (Indonesia)
-
-### Debug Mode
-
-Enable detailed logging by setting:
-
-```env
-NODE_ENV=development
-```
-
----
-
-## 🤝 Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-### How to Contribute
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Contribution Guidelines
-
-- Follow the existing code style
-- Write meaningful commit messages
-- Update documentation as needed
-- Add tests for new features (when applicable)
-- Keep pull requests focused on a single feature/fix
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 📬 Contact & Support
-
-- **GitHub**: [@reynaldiarya](https://github.com/reynaldiarya)
-- **Issues**: [Report a bug](https://github.com/reynaldiarya/Keyword-Rank-Tracker/issues)
-
----
-
-<div align="center">
-
-**Built with ❤️ using TypeScript and Node.js**
-
-If this project helped you, consider giving it a ⭐!
-
-</div>
+Reynaldi Arya
