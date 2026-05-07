@@ -3,15 +3,11 @@
 A high-performance SEO utility designed to automate search engine ranking monitoring across multiple scraping providers.
 
 <p align="center">
-  <img src="https://img.shields.io/npm/v/keyword-rank-tracker.svg?color=blue" />
-  <a href="https://www.npmjs.com/package/keyword-rank-tracker">
-    <img alt="downloads" src="https://img.shields.io/npm/dm/keyword-rank-tracker.svg?color=blue" target="_blank" />
-  </a>
+  <img src="https://img.shields.io/badge/version-1.0.0-blue.svg" />
+  <img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-339933.svg" />
+  <img src="https://img.shields.io/badge/TypeScript-6.x-3178C6.svg" />
   <a href="LICENSE">
     <img alt="License" src="https://img.shields.io/badge/license-MIT-yellow.svg" target="_blank" />
-  </a>
-  <a href="https://codecov.io/gh/reynaldiarya/Keyword-Rank-Tracker">
-    <img src="https://codecov.io/gh/reynaldiarya/Keyword-Rank-Tracker/branch/main/graph/badge.svg" />
   </a>
 </p>
 
