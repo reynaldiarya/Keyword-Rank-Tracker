@@ -5,8 +5,8 @@ import type { SearchScraper, SerpEntry } from '../../types';
 import { logger } from '../../utils';
 
 /**
- * Scraper menggunakan API pihak ketiga (Scraping Robot).
- * Lebih stabil daripada Puppeteer tapi berbayar/terbatas kuota.
+ * Scraper using a third-party API (Scraping Robot).
+ * Typically more stable than local Puppeteer, but requires API usage credits.
  */
 export class ScrapingRobotScraper implements SearchScraper {
   private readonly apiKey: string;
@@ -27,16 +27,16 @@ export class ScrapingRobotScraper implements SearchScraper {
     }
 
     const formattedKeyword = keyword.split(' ').join('+');
-    // URL Google Search yang akan discraping oleh API
+    // Target Google Search URL to be scraped via the API
     const googleUrl = encodeURI(
       `https://www.google.com/search?hl=${lang}&q=${formattedKeyword}&start=${start}`
     );
 
-    // Kirim request ke Scraping Robot API
+    // Send request to the Scraping Robot API
     const apiUrl = `https://api.scrapingrobot.com/?token=${this.apiKey}&proxyCountry=${country}&render=false&url=${googleUrl}`;
 
     try {
-      logger.info(`🔍 Mencari via Scraping Robot: "${keyword}"`);
+      logger.info(`Searching via Scraping Robot: "${keyword}"`);
       const response = await axios.get(apiUrl);
       const html = response.data.result;
       const $ = cheerio.load(html);

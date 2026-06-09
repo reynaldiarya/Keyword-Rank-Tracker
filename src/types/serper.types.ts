@@ -1,5 +1,5 @@
 /**
- * Interface hasil pencarian individual dari Serper.dev
+ * Represents an individual organic search result item from Serper.dev.
  */
 export interface SerperOrganicResult {
   title: string;
@@ -9,7 +9,7 @@ export interface SerperOrganicResult {
 }
 
 /**
- * Interface response utama API Serper.dev
+ * Represents the main API response format from Serper.dev.
  */
 export interface SerperResponse {
   organic: SerperOrganicResult[];

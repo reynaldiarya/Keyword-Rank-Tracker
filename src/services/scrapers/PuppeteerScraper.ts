@@ -6,32 +6,32 @@ import * as cheerio from 'cheerio';
 import type { SearchScraper, SerpEntry } from '../../types';
 import { logger } from '../../utils';
 
-// Menggunakan plugin Stealth untuk menyembunyikan fakta bahwa ini adalah bot Puppeteer
+// Use the Stealth plugin to hide the fact that this is a Puppeteer bot
 puppeteer.use(StealthPlugin());
 
 export class PuppeteerScraper implements SearchScraper {
   private readonly DEFAULT_USER_AGENT =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
-  // Menyimpan instance browser agar bisa dipakai berulang kali (hemat RAM)
+  // Store the browser instance to reuse it across multiple requests (reduces memory usage)
   private browser: Browser | null = null;
 
   /**
-   * Inisialisasi browser. Langkah ini penting agar kita tidak membuka-tutup browser
-   * setiap kali mencari satu keyword, yang akan sangat berat bagi PC.
+   * Initializes the browser instance. This prevents launching and closing the browser
+   * for each individual keyword, which is resource-intensive.
    */
   async initialize(): Promise<void> {
-    // Jika browser sudah ada, jangan buat baru
+    // If the browser is already initialized, reuse it
     if (this.browser) return;
 
     const browserWsEndpoint = process.env.BROWSER_WS_ENDPOINT;
 
-    // Jika tidak ada endpoint remote, pakai browser lokal saja
+    // If no remote WebSocket endpoint is provided, launch a local browser instance
     if (!browserWsEndpoint) {
       logger.info('No remote browser WS provided, launching local Puppeteer...');
       this.browser = await puppeteer.launch({ headless: true });
     } else {
-      // Jika ada endpoint (misal browserless.io), connect ke sana
+      // Connect to a remote browser instance if a WebSocket endpoint is provided (e.g., browserless.io)
       this.browser = await puppeteer.connect({
         browserWSEndpoint: browserWsEndpoint,
         defaultViewport: null,
@@ -40,8 +40,8 @@ export class PuppeteerScraper implements SearchScraper {
   }
 
   /**
-   * Menutup browser sepenuhnya untuk membersihkan memory.
-   * Dipanggil setelah selesai semua proses scraping.
+   * Closes the browser instance to free up memory.
+   * Typically invoked after all scraping tasks are completed.
    */
   async close(): Promise<void> {
     if (this.browser) {
@@ -51,7 +51,7 @@ export class PuppeteerScraper implements SearchScraper {
   }
 
   /**
-   * Fungsi utama untuk mengambil hasil pencarian Google.
+   * Main function to fetch search results from Google.
    */
   async fetchResults(
     keyword: string,
@@ -59,7 +59,7 @@ export class PuppeteerScraper implements SearchScraper {
     lang: string = 'id',
     country: string = 'id'
   ): Promise<SerpEntry[]> {
-    // Pastikan browser sudah siap
+    // Ensure the browser instance is initialized
     if (!this.browser) {
       await this.initialize();
     }
@@ -68,17 +68,17 @@ export class PuppeteerScraper implements SearchScraper {
       throw new Error('Failed to initialize browser');
     }
 
-    // Buka tab baru
+    // Open a new browser page/tab
     const page = await this.browser.newPage();
 
     try {
       const userAgent = process.env.PUPPETEER_USER_AGENT || this.DEFAULT_USER_AGENT;
       const cookie = process.env.PUPPETEER_COOKIE || '';
 
-      // Set User-Agent agar terlihat seperti user asli
+      // Set the User-Agent header to mimic a standard web browser
       await page.setUserAgent(userAgent);
 
-      // Set Header tambahan agar lebih meyakinkan Google
+      // Set additional headers to simulate a legitimate browser request to Google
       const headers: Record<string, string> = {
         'Accept-Language': `${lang}-${country},${lang};q=0.9`,
         Accept:
@@ -95,9 +95,9 @@ export class PuppeteerScraper implements SearchScraper {
       // Set ukuran layar PC standar
       await page.setViewport({ width: 1920, height: 1080 });
 
-      logger.info(`🔍 Mencari via Puppeteer: "${keyword}"`);
+      logger.info(`Searching via Puppeteer: "${keyword}"`);
 
-      // Buka halaman Google Search
+      // Navigate to the Google Search query URL
       await page.goto(
         `https://www.google.com/search?q=${encodeURIComponent(keyword)}&start=${start}&gl=${country}&hl=${lang}`,
         {
@@ -106,34 +106,34 @@ export class PuppeteerScraper implements SearchScraper {
         }
       );
 
-      // Lakukan gerakan manusia (scroll/mouse) agar tidak terdeteksi bot
+      // Simulate basic human interaction (mouse movement/scrolling) to evade detection
       await this.humanBehavior(page);
 
-      // Cek apakah kena Captcha atau blokir
+      // Check if blocked by a CAPTCHA or unusual traffic warnings
       const isCaptcha = await page.$('iframe[src*="google.com/recaptcha"]');
       const content = await page.content();
       const isUnusual =
         content.includes('lalu lintas yang tidak wajar') || content.includes('unusual traffic');
 
       if (isCaptcha || isUnusual) {
-        logger.error('🚨 KENA BLOKIR / CAPTCHA! Ganti IP atau tunggu.');
+        logger.error('Blocked by CAPTCHA. Please rotate IP or wait.');
         throw new Error('Puppeteer Blocked/Captcha detected');
       }
 
-      // Tunggu sampai hasil pencarian muncul (class div.yuRUbf biasanya membungkus hasil)
+      // Wait for the search results elements to load (e.g., div.yuRUbf container)
       try {
         await page.waitForSelector('div.yuRUbf', { timeout: 10000 });
       } catch (e) {
-        logger.warn('⚠️  Selector tidak ditemukan atau kena Captcha/Timeout.', e);
+        logger.warn('Selector not found or request timed out/blocked.', e);
       }
 
-      // Ambil HTML halaman
+      // Retrieve the page HTML content
       const html = await page.content();
       const $ = cheerio.load(html);
 
       const results: SerpEntry[] = [];
 
-      // Parsing HTML untuk mengambil judul, link, dan snippet
+      // Parse the HTML to extract titles, URLs, and snippets
       $('div.yuRUbf').each((i, el) => {
         const titleElement = $(el).find('h3');
         const linkElement = $(el).find('a');
@@ -154,13 +154,13 @@ export class PuppeteerScraper implements SearchScraper {
       logger.error('Puppeteer Error:', error);
       throw error;
     } finally {
-      // Tutup tab (page) saja, JANGAN tutup browser agar bisa dipakai lagi
+      // Close the page/tab, keeping the browser instance open for reuse
       await page.close();
     }
   }
 
   /**
-   * Simulasi perilaku manusia sederhana (gerakan mouse acak & scroll).
+   * Simulates simple human behavior including random mouse movements and scrolling.
    */
   private async humanBehavior(page: Page) {
     try {

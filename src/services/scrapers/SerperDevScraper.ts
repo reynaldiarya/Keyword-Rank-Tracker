@@ -3,7 +3,7 @@ import axios from 'axios';
 import type { SearchScraper, SerpEntry, SerperResponse } from '../../types';
 import { logger } from '../../utils';
 
-// Scraper menggunakan Serper.dev API (Wrapper Google Search)
+// Scraper using the Serper.dev API (Google Search API wrapper)
 export class SerperDevScraper implements SearchScraper {
   private apiKey: string;
 
@@ -11,17 +11,17 @@ export class SerperDevScraper implements SearchScraper {
     this.apiKey = apiKey;
   }
 
-  // Mengambil hasil pencarian dari Serper.dev
+  // Retrieves search results from Serper.dev
   async fetchResults(keyword: string, start: number = 0): Promise<SerpEntry[]> {
     try {
-      // Konversi start (offset) ke halaman (1, 2, 3...)
+      // Convert start offset to page number (1, 2, 3...)
       const page = Math.floor(start / 10) + 1;
 
-      // Siapkan data request
+      // Prepare request payload
       const data = JSON.stringify({
         q: keyword,
-        gl: 'id', // Lokasi Indonesia
-        hl: 'id', // Bahasa Indonesia
+        gl: 'id', // Geographic location: Indonesia
+        hl: 'id', // Interface language: Indonesian
         page: page,
       });
 
@@ -36,12 +36,12 @@ export class SerperDevScraper implements SearchScraper {
         data: data,
       };
 
-      // Kirim request API
+      // Send the API request
       const response = await axios.request<SerperResponse>(config);
 
       logger.debug(`SerperDev response status: ${response.status}`);
 
-      // Validasi response punya data organic
+      // Ensure the response contains organic search results
       if (!response.data || !response.data.organic) {
         logger.warn(
           `No organic results found for keyword: ${keyword}. Response data: ${JSON.stringify(response.data)}`
@@ -51,7 +51,7 @@ export class SerperDevScraper implements SearchScraper {
 
       logger.debug(`Found ${response.data.organic.length} organic results for keyword: ${keyword}`);
 
-      // Mapping hasil ke format aplikasi
+      // Map results to the application format
       return response.data.organic.map((item) => ({
         rank: item.position,
         title: item.title,

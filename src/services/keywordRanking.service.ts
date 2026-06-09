@@ -14,7 +14,7 @@ export interface RankingResult {
 export type ScraperType = 'scrapingRobot' | 'puppeteer' | 'serperDev';
 
 export class KeywordRankingService {
-  private readonly BATCH_SIZE = 1; // Jumlah keyword yang diproses sekaligus (paralel)
+  private readonly BATCH_SIZE = 1; // Number of keywords to process concurrently (in parallel)
 
   public async getKeywordRankings(
     website: string,
@@ -25,7 +25,7 @@ export class KeywordRankingService {
     const start = (page - 1) * 10;
     const results: RankingResult[] = [];
 
-    // Pilih jenis Scraper sesuai request
+    // Select the scraper type based on the request parameters
     let scraper: SearchScraper;
     if (scraperType === 'puppeteer') {
       scraper = new PuppeteerScraper();
@@ -35,17 +35,17 @@ export class KeywordRankingService {
       scraper = new ScrapingRobotScraper(config.scrapingRobotApiKey);
     }
 
-    // Initialize Scraper (Penting untuk Puppeteer agar buka browser 1x saja)
+    // Initialize the scraper (crucial for Puppeteer to avoid spawning multiple browser instances)
     if (scraper.initialize) {
       await scraper.initialize();
     }
 
     try {
-      // Proses keyword dalam batch (kelompok) agar tidak terlalu berat
+      // Process keywords in batches to avoid overloading system resources or hitting rate limits
       for (let i = 0; i < keywords.length; i += this.BATCH_SIZE) {
         const batch = keywords.slice(i, i + this.BATCH_SIZE);
 
-        // Proses batch secara concurrent (bersamaan)
+        // Process the current batch concurrently
         const batchPromises = batch.map((keyword) =>
           this.checkKeyword(website, keyword, start, scraper)
         );
@@ -53,7 +53,7 @@ export class KeywordRankingService {
         results.push(...batchResults);
       }
     } finally {
-      // Tutup Scraper (Tutup browser Puppeteer) setelah semua selesai
+      // Close the scraper to clean up resources (e.g., closing the Puppeteer browser instance)
       if (scraper.close) {
         await scraper.close();
       }
@@ -71,7 +71,7 @@ export class KeywordRankingService {
     try {
       const serpResults = await scraper.fetchResults(keyword, start);
 
-      // Cari apakah website kita ada di hasil pencarian
+      // Check if the target website is present in the search results
       const match = serpResults.find((entry) => entry.url.includes(website));
 
       if (match) {

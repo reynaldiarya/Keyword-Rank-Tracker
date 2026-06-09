@@ -3,7 +3,7 @@
 A high-performance SEO utility designed to automate search engine ranking monitoring across multiple scraping providers.
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-blue.svg" />
+  <img src="https://img.shields.io/badge/version-1.0.1-blue.svg" />
   <img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-339933.svg" />
   <img src="https://img.shields.io/badge/TypeScript-6.x-3178C6.svg" />
   <a href="LICENSE">

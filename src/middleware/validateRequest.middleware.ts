@@ -5,19 +5,19 @@ import type { ZodSchema } from 'zod';
 import { logger } from '../utils';
 
 /**
- * Middleware untuk validasi request menggunakan library Zod.
- * Memastikan data yang dikirim user sesuai format yang diharapkan.
+ * Middleware for validating requests using the Zod library.
+ * Ensures the incoming request data matches the expected schema format.
  */
 export const validateRequest =
   (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
     try {
-      // Coba parse (validasi) body, query, dan params
+      // Parse and validate the request body, query parameters, and route parameters
       schema.parse({
         body: req.body,
         query: req.query,
         params: req.params,
       });
-      // Jika sukses, lanjut ke controller
+      // If validation succeeds, proceed to the next middleware or controller
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -25,7 +25,7 @@ export const validateRequest =
         logger.warn(`Validation Error: ${JSON.stringify((error as any).errors)}`);
         return res.status(400).json({
           error: 'Validation Error',
-          // Kembalikan detail error agar user tahu field mana yang salah
+          // Return the validation details to inform the user about invalid fields
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           details: (error as any).errors.map((e: any) => ({
             path: e.path,
