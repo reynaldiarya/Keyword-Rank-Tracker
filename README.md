@@ -90,15 +90,15 @@ The application uses environment variables for sensitive data and system setting
 
 ### Environment Variables
 
-| Variable | Description | Default / Example |
-|----------|-------------|-------------------|
-| `PORT` | The port the API server will listen on | `3003` |
-| `NODE_ENV` | Application environment mode | `production` |
-| `SCRAPING_ROBOT_API_KEY` | API Key for Scraping Robot provider | `your_api_key` |
-| `SERPER_DEV_API_KEY` | API Key for Serper.dev provider | `your_api_key` |
-| `BROWSER_WS_ENDPOINT` | WebSocket endpoint for remote Puppeteer | `ws://localhost:3000` |
-| `PUPPETEER_USER_AGENT` | Custom User-Agent string for Puppeteer | `Mozilla/5.0...` |
-| `PUPPETEER_COOKIE` | Custom cookies for search requests | `your_cookie` |
+| Variable                 | Description                             | Default / Example     |
+| ------------------------ | --------------------------------------- | --------------------- |
+| `PORT`                   | The port the API server will listen on  | `3003`                |
+| `NODE_ENV`               | Application environment mode            | `production`          |
+| `SCRAPING_ROBOT_API_KEY` | API Key for Scraping Robot provider     | `your_api_key`        |
+| `SERPER_DEV_API_KEY`     | API Key for Serper.dev provider         | `your_api_key`        |
+| `BROWSER_WS_ENDPOINT`    | WebSocket endpoint for remote Puppeteer | `ws://localhost:3000` |
+| `PUPPETEER_USER_AGENT`   | Custom User-Agent string for Puppeteer  | `Mozilla/5.0...`      |
+| `PUPPETEER_COOKIE`       | Custom cookies for search requests      | `your_cookie`         |
 
 ## Usage
 
@@ -110,12 +110,12 @@ The primary endpoint allows you to query the current ranking of a website for sp
 
 #### Request Body (JSON)
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `website` | `string` | Yes | The domain or URL to track (e.g., `google.com`) |
-| `keywords` | `array` | Yes | List of keywords to check rankings for |
-| `page` | `number` | No | Number of Google pages to scan (default: `1`) |
-| `scraper` | `enum` | No | Scraper type: `puppeteer`, `scrapingRobot`, or `serperDev` |
+| Field      | Type     | Required | Description                                                |
+| ---------- | -------- | -------- | ---------------------------------------------------------- |
+| `website`  | `string` | Yes      | The domain or URL to track (e.g., `google.com`)            |
+| `keywords` | `array`  | Yes      | List of keywords to check rankings for                     |
+| `page`     | `number` | No       | Number of Google pages to scan (default: `1`)              |
+| `scraper`  | `enum`   | No       | Scraper type: `puppeteer`, `scrapingRobot`, or `serperDev` |
 
 #### Sample Request
 
@@ -167,14 +167,14 @@ src/
 
 ## Scripts / Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server with hot-reload using tsx |
-| `npm run build` | Compile TypeScript source code to JavaScript in `dist/` |
-| `npm start` | Run the compiled production application |
-| `npm run format` | Format source code using Prettier |
-| `npm run lint` | Analyze code for potential errors and styling issues |
-| `npm run lint:fix` | Automatically fix linting errors |
+| Command            | Description                                             |
+| ------------------ | ------------------------------------------------------- |
+| `npm run dev`      | Start development server with hot-reload using tsx      |
+| `npm run build`    | Compile TypeScript source code to JavaScript in `dist/` |
+| `npm start`        | Run the compiled production application                 |
+| `npm run format`   | Format source code using Prettier                       |
+| `npm run lint`     | Analyze code for potential errors and styling issues    |
+| `npm run lint:fix` | Automatically fix linting errors                        |
 
 ## Contributing
 
