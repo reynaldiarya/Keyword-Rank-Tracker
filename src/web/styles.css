@@ -1,16 +1,8 @@
 @import 'tailwindcss' source(none);
 @source "./tracker.tsx";
 
-@font-face {
-  font-family: 'Rethink Sans';
-  src: url('./rethink-sans.woff2') format('woff2');
-  font-weight: 400 800;
-  font-style: normal;
-  font-display: swap;
-}
-
 @theme {
-  --font-sans: 'Rethink Sans', system-ui, sans-serif;
+  --font-sans: system-ui, sans-serif;
   --color-ground: #edf2ea;
   --color-paper: #fcfdf9;
   --color-mist: #e6eee3;
@@ -59,13 +51,13 @@
   .site-header {
     border-bottom: 1px solid var(--color-rule);
     background: var(--color-paper);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 
   .site-name {
-    font-size: 0.96rem;
-    font-weight: 750;
+    font-weight: 700;
     letter-spacing: -0.018em;
-    line-height: 1.15;
   }
 
   .site-mark {
@@ -100,8 +92,7 @@
     gap: 0.55rem;
     min-height: 2.75rem;
     color: var(--color-muted);
-    font-size: 0.875rem;
-    font-weight: 680;
+    font-weight: 600;
   }
 
   .help-link:hover {
@@ -484,13 +475,12 @@
   }
 
   @media (max-width: 22.5rem) {
-    .site-name {
-      font-size: 0.86rem;
+    .site-header {
+      font-size: 0.8125rem;
     }
 
     .help-link {
       gap: 0.4rem;
-      font-size: 0.8rem;
     }
   }
 
