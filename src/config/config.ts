@@ -1,26 +1,20 @@
-import { config as loadEnv } from 'dotenv';
 import { z } from 'zod';
-
-loadEnv();
 
 const envSchema = z.object({
   PORT: z
     .string()
-    .default('3003')
+    .default('3000')
     .transform((val) => parseInt(val, 10)),
   SCRAPING_ROBOT_API_KEY: z.string().optional(),
   SERPER_DEV_API_KEY: z.string().optional(),
 });
 
-const env = envSchema.safeParse(process.env);
-
-if (!env.success) {
-  console.error('Invalid environment variables:', env.error.format());
-  process.exit(1);
-}
+const environment = globalThis.process?.env ?? {};
+const env = envSchema.parse(environment);
 
 export const config = {
-  port: env.data.PORT,
-  scrapingRobotApiKey: env.data.SCRAPING_ROBOT_API_KEY || '',
-  serperDevApiKey: env.data.SERPER_DEV_API_KEY || '',
+  port: env.PORT,
+  isDevelopment: environment.NODE_ENV === 'development',
+  scrapingRobotApiKey: env.SCRAPING_ROBOT_API_KEY || '',
+  serperDevApiKey: env.SERPER_DEV_API_KEY || '',
 };

@@ -20,7 +20,8 @@ export class KeywordRankingService {
     website: string,
     keywords: string[],
     page: number = 1,
-    scraperType: ScraperType = 'scrapingRobot'
+    scraperType: ScraperType = 'scrapingRobot',
+    onKeywordError?: () => void
   ): Promise<RankingResult[]> {
     const start = (page - 1) * 10;
     const results: RankingResult[] = [];
@@ -47,7 +48,7 @@ export class KeywordRankingService {
 
         // Process the current batch concurrently
         const batchPromises = batch.map((keyword) =>
-          this.checkKeyword(website, keyword, start, scraper)
+          this.checkKeyword(website, keyword, start, scraper, onKeywordError)
         );
         const batchResults = await Promise.all(batchPromises);
         results.push(...batchResults);
@@ -66,7 +67,8 @@ export class KeywordRankingService {
     website: string,
     keyword: string,
     start: number,
-    scraper: SearchScraper
+    scraper: SearchScraper,
+    onKeywordError?: () => void
   ): Promise<RankingResult> {
     try {
       const serpResults = await scraper.fetchResults(keyword, start);
@@ -90,6 +92,7 @@ export class KeywordRankingService {
       }
     } catch (error) {
       logger.error(`Error checking keyword "${keyword}":`, error);
+      onKeywordError?.();
       return {
         keyword,
         rank: null,

@@ -1,13 +1,24 @@
-import { Router } from 'express';
+import { zValidator } from '@hono/zod-validator';
+import { Hono } from 'hono';
 
-import { keywordRankingController } from '../controllers';
+import { getRankings } from '../controllers/keywordRanking.controller';
+import { prepareRankingBody } from '../middleware/rankingBody.middleware';
 import { keywordRankingSchema } from '../schemas';
-import { validateRequest } from '../middleware';
+import type { AppEnv } from '../types/app.types';
+import { logger } from '../utils';
 
-const router = Router();
+const validateRanking = zValidator('json', keywordRankingSchema, (result, c) => {
+  if (!result.success) {
+    const details = result.error.issues.map(({ path, message }) => ({ path, message }));
+    logger.warn(`Validation Error: ${JSON.stringify(details)}`);
+    return c.json({ error: 'Validation Error', details }, 400);
+  }
+});
 
-router.get('/', validateRequest(keywordRankingSchema), (req, res) =>
-  keywordRankingController.getRankings(req, res)
+export default new Hono<AppEnv>().on(
+  ['GET', 'POST'],
+  '/keyword-ranking',
+  prepareRankingBody,
+  validateRanking,
+  getRankings
 );
-
-export default router;

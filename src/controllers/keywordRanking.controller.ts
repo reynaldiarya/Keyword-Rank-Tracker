@@ -1,38 +1,29 @@
-import type { Request, Response } from 'express';
+import type { Handler } from 'hono';
 
-import { keywordRankingService } from '../services';
-import { logger } from '../utils';
+import type { KeywordRankingInput } from '../schemas';
+import { keywordRankingService } from '../services/keywordRanking.service';
+import type { AppEnv } from '../types/app.types';
+import { INCOMPLETE_RANKINGS_HEADER } from '../types/keywordRanking.types';
+import type { KeywordRankingResponse } from '../types/keywordRanking.types';
 
-export class KeywordRankingController {
-  /**
-   * Retrieves keyword rankings for a specific website.
-   * This method invokes the ranking service to perform the scraping.
-   */
-  public async getRankings(req: Request, res: Response): Promise<void> {
-    try {
-      // Data has been validated by the middleware, so it is safe to extract directly
-      const { website, keywords, page, scraper } = req.body;
+export class RankingProviderError extends Error {}
 
-      const results = await keywordRankingService.getKeywordRankings(
-        website,
-        keywords,
-        page,
-        scraper
-      );
+export const getRankings: Handler<AppEnv, string, { out: { json: KeywordRankingInput } }> = async (
+  c
+) => {
+  const { website, keywords, page, scraper } = c.req.valid('json').body;
+  const rankings = await keywordRankingService
+    .getKeywordRankings(website, keywords, page, scraper, () => {
+      c.header(INCOMPLETE_RANKINGS_HEADER, 'true');
+    })
+    .catch((cause: unknown) => {
+      throw new RankingProviderError('Keyword ranking provider failed', { cause });
+    });
 
-      // Return the JSON response to the user
-      res.json({
-        website,
-        page,
-        totalFound: results.length,
-        rankings: results,
-      });
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      logger.error(`Keyword Ranking Controller Error: ${message}`);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  }
-}
-
-export const keywordRankingController = new KeywordRankingController();
+  return c.json<KeywordRankingResponse>({
+    website,
+    page,
+    totalFound: rankings.length,
+    rankings,
+  });
+};
