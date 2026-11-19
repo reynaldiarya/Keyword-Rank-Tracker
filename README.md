@@ -3,8 +3,8 @@
 A high-performance SEO utility designed to automate search engine ranking monitoring across multiple scraping providers.
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.1-blue.svg" />
-  <img src="https://img.shields.io/badge/Node.js-%3E%3D18.0.0-339933.svg" />
+  <img src="https://img.shields.io/badge/version-1.1.0-blue.svg" />
+  <img src="https://img.shields.io/badge/Node.js-%3E%3D22.0.0-339933.svg" />
   <img src="https://img.shields.io/badge/TypeScript-6.x-3178C6.svg" />
   <a href="LICENSE">
     <img alt="License" src="https://img.shields.io/badge/license-MIT-yellow.svg" target="_blank" />
@@ -17,114 +17,126 @@ Keyword Rank Tracker is a robust Node.js application built for developers and SE
 
 ## Features
 
-- **Multi-Provider Scraper Architecture** - Switch seamlessly between Puppeteer, Scraping Robot, and Serper.dev to balance cost and performance.
-- **Stealth Automation** - Integrated Puppeteer stealth plugins and user-agent rotation to maintain high success rates and avoid detection.
-- **Deep SERP Analysis** - Support for multi-page search result scanning to find rankings even beyond the first page.
-- **Strict Data Validation** - Enterprise-grade request validation using Zod to ensure data integrity and clear error reporting.
-- **Production-Ready Logging** - Comprehensive event tracking and error monitoring powered by Winston for streamlined maintenance.
-- **Developer-Centric Design** - Written entirely in TypeScript with a clean, modular architecture for easy extension and integration.
+- **Multi-Provider Scraper Architecture** - Switch between Puppeteer, Scraping Robot, and Serper.dev for each scan.
+- **Stealth Automation** - Use Puppeteer Extra with the Stealth plugin and a local or remote Chrome instance.
+- **Deep SERP Analysis** - Scan multiple Google result pages and see the rank and URL or an unranked status for each keyword.
+- **Strict Data Validation** - Validate ranking requests with Zod and display field errors in the web interface.
+- **Production-Ready Logging** - Log scraper activity and provider errors to the console with Winston.
+- **Developer-Centric Design** - The TypeScript application includes a Hono JSX interface and a JSON API.
 
 ## Tech Stack
 
-- **Backend Framework**: Node.js (Express 5.x)
+- **Backend Framework**: Node.js (Hono and `@hono/node-server`)
+- **Frontend**: Hono JSX and Tailwind CSS
 - **Language**: TypeScript 6.x
 - **Browser Automation**: Puppeteer, Puppeteer Extra (Stealth)
 - **Data Extraction**: Cheerio
-- **Validation**: Zod
+- **Validation**: Zod and `@hono/zod-validator`
 - **Networking**: Axios
-- **Logging**: Winston
-- **Environment Management**: Dotenv
+- **Logging**: Winston console transport
+- **Environment Management**: Node.js `--env-file-if-exists`
+- **Asset Build**: Tailwind CLI and esbuild
 
 ## Installation Guide
 
 ### Prerequisites
 
-- Node.js 18.x or higher
-- npm 9.x or higher
-- A browserless instance (optional, for remote Puppeteer execution)
+- Node.js 22 or higher
+- npm (included with Node.js)
+- Local or remote Chrome for Puppeteer, or an API key for Scraping Robot or Serper.dev
 
 ### Steps
 
-1. Clone the repository to your local machine:
+1. Clone the repository and enter its directory.
 
-```bash
-git clone https://github.com/reynaldiarya/Keyword-Rank-Tracker.git
-cd Keyword-Rank-Tracker
-```
+   ```bash
+   git clone https://github.com/reynaldiarya/Keyword-Rank-Tracker.git
+   cd Keyword-Rank-Tracker
+   ```
 
-2. Install the project dependencies:
+2. Install the project dependencies from the lockfile.
 
-```bash
-npm install
-```
+   ```bash
+   npm ci
+   ```
 
-3. Configure the environment variables:
+3. Copy the environment template to `.env` using your shell.
 
-```bash
-cp .env.example .env
-```
+   ```bash
+   cp .env.example .env
+   ```
 
-4. Open the `.env` file and update the necessary configurations (see Configuration section).
+   ```powershell
+   Copy-Item .env.example .env
+   ```
 
-5. Build the production bundle:
+4. Set the environment variables for your scraper. See [Configuration](#configuration).
 
-```bash
-npm run build
-```
+5. Build the server and frontend assets.
 
-6. Start the application:
+   ```bash
+   npm run build
+   ```
 
-```bash
-npm start
-```
+6. Start the compiled Node server.
 
-For development with hot-reload:
+   ```bash
+   npm start
+   ```
+
+For development, start the server and frontend watchers.
 
 ```bash
 npm run dev
 ```
 
+On a Node-compatible host with its own HTTP adapter, import `dist/app.js` and serve `dist/assets/` under `/assets/`. The app imports Puppeteer and Winston modules that use Node.js APIs.
+
 ## Configuration
 
-The application uses environment variables for sensitive data and system settings.
+The application loads `.env` when it exists. Set provider credentials on the server.
 
 ### Environment Variables
 
-| Variable                 | Description                             | Default / Example     |
-| ------------------------ | --------------------------------------- | --------------------- |
-| `PORT`                   | The port the API server will listen on  | `3003`                |
-| `NODE_ENV`               | Application environment mode            | `production`          |
-| `SCRAPING_ROBOT_API_KEY` | API Key for Scraping Robot provider     | `your_api_key`        |
-| `SERPER_DEV_API_KEY`     | API Key for Serper.dev provider         | `your_api_key`        |
-| `BROWSER_WS_ENDPOINT`    | WebSocket endpoint for remote Puppeteer | `ws://localhost:3000` |
-| `PUPPETEER_USER_AGENT`   | Custom User-Agent string for Puppeteer  | `Mozilla/5.0...`      |
-| `PUPPETEER_COOKIE`       | Custom cookies for search requests      | `your_cookie`         |
+| Variable                 | Description                                                                       | Default / Example                      |
+| ------------------------ | --------------------------------------------------------------------------------- | -------------------------------------- |
+| `PORT`                   | HTTP port used by the Node server.                                                | `3000`                                 |
+| `NODE_ENV`               | Set to `development` to enable debug logging.                                     | Unset (`production` in `.env.example`) |
+| `SCRAPING_ROBOT_API_KEY` | API key for the Scraping Robot provider.                                          | Unset                                  |
+| `SERPER_DEV_API_KEY`     | API key for the Serper.dev provider.                                              | Unset                                  |
+| `BROWSER_WS_ENDPOINT`    | WebSocket URL for a remote Chrome instance. Leave empty to launch Chrome locally. | Unset                                  |
+| `PUPPETEER_USER_AGENT`   | Optional override for Puppeteer's User-Agent header.                              | Built-in value                         |
+| `PUPPETEER_COOKIE`       | Optional Cookie header for Puppeteer. Leave empty for public searches.            | Unset                                  |
+
+To use local Chrome with the built-in User-Agent, clear the sample values for `BROWSER_WS_ENDPOINT`, `PUPPETEER_USER_AGENT`, and `PUPPETEER_COOKIE` after copying `.env.example`. Puppeteer downloads its Chrome binary during dependency installation.
 
 ## Usage
 
 ### Track Keyword Rankings
 
-The primary endpoint allows you to query the current ranking of a website for specific keywords.
+Enter a website and one keyword per line, set **Pages to scan**, choose a **Scraper**, and select **Check rankings**. The tracker shows progress and marks keywords with no match in the pages scanned. [Open the local tracker](http://localhost:3000)
 
-**Endpoint:** `GET /keyword-ranking`
+**Endpoint:** `POST /keyword-ranking`
+
+Send JSON with `Content-Type: application/json`. The Node server also supports `GET /keyword-ranking` with the same JSON body for existing clients.
 
 #### Request Body (JSON)
 
-| Field      | Type     | Required | Description                                                |
-| ---------- | -------- | -------- | ---------------------------------------------------------- |
-| `website`  | `string` | Yes      | The domain or URL to track (e.g., `google.com`)            |
-| `keywords` | `array`  | Yes      | List of keywords to check rankings for                     |
-| `page`     | `number` | No       | Number of Google pages to scan (default: `1`)              |
-| `scraper`  | `enum`   | No       | Scraper type: `puppeteer`, `scrapingRobot`, or `serperDev` |
+| Field      | Type       | Required | Description                                                                              |
+| ---------- | ---------- | -------- | ---------------------------------------------------------------------------------------- |
+| `website`  | `string`   | Yes      | The domain or URL to track, such as `facebook.com`.                                      |
+| `keywords` | `string[]` | Yes      | At least one keyword to check.                                                           |
+| `page`     | `number`   | No       | The Google results page for this request. Use an integer of at least 1. Defaults to `1`. |
+| `scraper`  | `enum`     | No       | `puppeteer`, `scrapingRobot`, or `serperDev`. Defaults to `scrapingRobot`.               |
 
 #### Sample Request
 
 ```json
 {
-  "website": "example.com",
-  "keywords": ["modern web design", "seo tools"],
+  "website": "facebook.com",
+  "keywords": ["facebook", "typescript documentation"],
   "page": 1,
-  "scraper": "puppeteer"
+  "scraper": "serperDev"
 }
 ```
 
@@ -132,49 +144,55 @@ The primary endpoint allows you to query the current ranking of a website for sp
 
 ```json
 {
-  "website": "example.com",
+  "website": "facebook.com",
   "page": 1,
-  "totalFound": 2,
+  "totalFound": 1,
   "rankings": [
     {
-      "keyword": "modern web design",
-      "rank": 3,
-      "url": "https://example.com/blog/modern-design"
-    },
-    {
-      "keyword": "seo tools",
-      "rank": 12,
-      "url": "https://example.com/tools"
+      "keyword": "facebook",
+      "rank": 1,
+      "url": "https://www.facebook.com/"
     }
   ]
 }
 ```
 
+The API returns matching keywords from the requested page. If one or more keyword lookups fail, check for `X-Ranking-Incomplete: true` alongside any matches returned. Schema validation errors return HTTP `400`.
+
 ## Project Structure
 
 ```text
 src/
+├── app.ts            # Shared Hono application and error handling
+├── index.ts          # Node server and static asset serving
 ├── config/           # Application configuration and environment mapping
 ├── controllers/      # Request handlers and response logic
-├── middleware/       # Custom Express middlewares (validation, errors)
+├── middleware/       # JSON request body preparation
 ├── routes/           # API route definitions
 ├── schemas/          # Zod validation schemas
 ├── services/         # Core business logic and scraper implementations
 │   └── scrapers/     # Provider-specific scraping logic
 ├── types/            # TypeScript interface and type definitions
-└── utils/            # Shared utilities and logger configuration
+├── utils/            # Shared utilities and logger configuration
+└── web/              # Hono JSX page, browser script, and Tailwind styles
 ```
 
 ## Scripts / Commands
 
-| Command            | Description                                             |
-| ------------------ | ------------------------------------------------------- |
-| `npm run dev`      | Start development server with hot-reload using tsx      |
-| `npm run build`    | Compile TypeScript source code to JavaScript in `dist/` |
-| `npm start`        | Run the compiled production application                 |
-| `npm run format`   | Format source code using Prettier                       |
-| `npm run lint`     | Analyze code for potential errors and styling issues    |
-| `npm run lint:fix` | Automatically fix linting errors                        |
+| Command                | Description                                                        |
+| ---------------------- | ------------------------------------------------------------------ |
+| `npm run dev`          | Build the frontend assets and start the server and asset watchers. |
+| `npm run build`        | Compile TypeScript and build the frontend assets in `dist/`.       |
+| `npm start`            | Run the compiled Node application.                                 |
+| `npm run format`       | Format the source, configuration, and README with Prettier.        |
+| `npm run lint`         | Analyze the source with ESLint.                                    |
+| `npm run lint:fix`     | Apply available ESLint fixes.                                      |
+| `npm run dev:server`   | Watch the Node entry point with tsx.                               |
+| `npm run dev:css`      | Watch and rebuild the Tailwind stylesheet.                         |
+| `npm run dev:client`   | Watch and rebuild the browser bundle.                              |
+| `npm run build:assets` | Build the stylesheet and browser bundle.                           |
+| `npm run build:css`    | Compile Tailwind CSS to `dist/assets/tracker.css`.                 |
+| `npm run build:client` | Bundle browser code to `dist/assets/tracker.js`.                   |
 
 ## Contributing
 
